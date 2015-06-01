@@ -4,7 +4,7 @@ layout: page
 permalink: /profiling/
 ---
 
-After checking out the contents of [[meta] Resolve known performance regressions in Drupal 8](https://www.drupal.org/node/1744302) it became clear that we needed some serious numbers. Authenticated user performance and scaling of uncached page requests has never been one of Drupal's particular strong suits, and after seeing some scary numbers (a pageload is 3-4x as slow on D8!!!) I wanted to try to get a handle on things myself. Its easy for one set of half-baked statistics or another to spread and enter the public consciousness even though that information might not be reliable, so I have tried to generate a lot of numbers and document how I got to them so that the process is repeatable enough for anyone who wants to explore or verify this work.
+After checking out the contents of [[meta] Resolve known performance regressions in Drupal 8](https://www.drupal.org/node/1744302) it became clear that we needed some serious numbers. Authenticated user performance and scaling of uncached page requests has never been one of Drupal's particular strong suits, and after seeing some scary rumours (a pageload is 3-4x as slow on D8!!!) I wanted to try to get a handle on things myself. Its easy for one set of half-baked statistics or another to spread and enter the public consciousness even though that information might not be reliable, so I have tried to generate a lot of numbers and document how I got to them so that the process is repeatable enough for anyone who wants to explore or verify this work.
 
 I hope the following is useful.
 
