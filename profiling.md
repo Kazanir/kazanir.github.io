@@ -4,7 +4,7 @@ layout: page
 permalink: /profiling/
 ---
 
-After checking out the contents of [[meta] Resolve known performance regressions in Drupal 8](https://www.drupal.org/node/1744302) it became clear that we needed some serious numbers. Authenticated user performance and scaling of uncached page requests has never been one of Drupal's particular strong suits, and after seeing some scary rumours I wanted to try to get a handle on things myself. Its easy for one set of half-baked statistics or another to spread and enter the public consciousness even though that information might not be reliable, so I have tried to generate a lot of numbers and document how I got to them so that the process is repeatable enough for anyone who wants to explore or verify this work.
+After checking out the contents of [[meta] Resolve known performance regressions in Drupal 8](https://www.drupal.org/node/1744302) it became clear that we needed some serious numbers. Authenticated user performance and scaling of uncached page requests has never been one of Drupal's particularly strong suits, and after seeing some scary rumours I wanted to try to get a handle on things myself. Its easy for one set of half-baked statistics or another to spread and enter the public consciousness even though that information might not be reliable, so I have tried to generate a lot of numbers and document how I got to them so that the process is repeatable enough for anyone who wants to explore or verify this work.
 
 I hope the following is useful.
 
@@ -22,7 +22,7 @@ Each target was tested with a concurrency of 1 and 20 on the following 4 PHP run
 HHVM's "repo authoritative" mode is similar to PHP's `apc.stat = 0` in that it does not allow for changes to code files after the server has been booted. However, the restriction is actually more serious -- new code files cannot even be *added* after the server is booted (as the codebase is compiled into memory at boot time) and `eval()` and `create_function()` cannot be used. This means that D8 required a little sorcery to pre-compile all of Core's Twig templates, and switched back to the standard PhpStorage\FileStorage class in the site settings. To do this (with many thanks to [Fabianx](https://www.drupal.org/u/fabianx) for his advice) I used a Drush script and fed it all the Twig templates in the repository, rendering them each once via Drush before compiling the HHVM codebase. (This setup script is in the profiling toolkit repo discussed later.)
 
 | Concurrency: 1          | Drupal 7             | Drupal 8, No Cache   | Drupal 8, Page Cache |
-|-------------------------|----------------------|----------------------|----------------------|
+|-------------------------|---------------------:|---------------------:|---------------------:|
 | PHP 5.6                 | `75.267339218159 ms` |  `219.2673992674 ms` | `22.322763306908 ms` |
 | PHP 7 Nightly           |  `9.661418627776 ms` |   `37.9087428206 ms` |  `2.001863401278 ms` |
 | HHVM 3.7.1              |  `9.580457863304 ms` |   `42.6652329749 ms` |  `2.219886789312 ms` |
