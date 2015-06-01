@@ -23,13 +23,17 @@ HHVM's "repo authoritative" mode is similar to PHP's `apc.stat = 0` in that it d
 
 Here are the single-request results:
 
-| Concurrency: 1          | Drupal 7             | Drupal 8, No Cache   | Drupal 8, Page Cache |
-|-------------------------|----------------------|----------------------|----------------------|
-| PHP 5.6                 | `75.267339218159 ms` |  `219.2673992674 ms` | `22.322763306908 ms` |
-| PHP 7 Nightly           |  `9.661418627776 ms` |   `37.9087428206 ms` |  `2.001863401278 ms` |
-| HHVM 3.7.1              |  `9.580457863304 ms` |   `42.6652329749 ms` |  `2.219886789312 ms` |
-| HHVM 3.7.1 w/ Repo.Auth |  `9.879979570990 ms` |   `32.3803814713 ms` |  `1.642432380587 ms` |
-
+| Concurrency: 1          | Drupal 7             | Drupal 8, No Cache    | Drupal 8, Page Cache  |
+|-------------------------|----------------------|-----------------------|-----------------------|
+| PHP 5.6                 | `75.267339218159 ms` |  `219.2673992674 ms`  | `22.322763306908 ms`  |
+| PHP 7 Nightly           |  `9.661418627776 ms` |   `37.9087428206 ms`  |  `2.001863401278 ms`  |
+| HHVM 3.7.1              |  `9.580457863304 ms` |   `42.6652329749 ms`  |  `2.219886789312 ms`  |
+| HHVM 3.7.1 w/ Repo.Auth |  `9.879979570990 ms` |   `32.3803814713 ms`  |  `1.642432380587 ms`  |
+| **Concurrency: 20**     |                      |                       |                       |
+| PHP 5.6                 |  `656.8264689730 ms` | `1,847.7268518519 ms` | `195.55651889416 ms`  |
+| PHP 7 Nightly           |  `73.02692943264 ms` | `292.86353631695 ms`  |  `6.8753742208811 ms` |
+| HHVM 3.7.1              |  `72.44890776699 ms` | `319.18654923939 ms`  | `18.630696400083 ms`  |
+| HHVM 3.7.1 w/ Repo.Auth |  `69.32793263646 ms` | `236.28348478862 ms`  |  `6.744057231447 ms`  |
 
 
 The stats from the benchmarking tool (a thin layer on top of Siege) are [available here](http://tiny.cc/d8perfstats). The raw JSON output (with more stats) is available for all targets on the second tab of the sheet.
@@ -54,12 +58,13 @@ perf report -g -i d7-repoauth-perf-10552.data
 
 The problem with performance profiling is that, in short, statistics are easy to get wrong. Unfortunately, a nice chart of stats is very readable and very convincing to the human mind in spite of how easy it is to accidentally end up with misleading stats. With that in mind, I have tried to document how I got here and make this process repeatable for anyone who wants to try the same stuff I did.
 
-These tests were done on an AWS `c4.xlarge` instance class running the Ubuntu 14.04 AMI provided by Canonical. I originally picked this class because its RAM corresponds to the largest available Heroku Dyno type, the Performance (PX) Dyno, but it appears that the original PX Dynos were based on the `c1.xlarge` class (which had twice as many logical CPU cores.) It is not clear whether new PX Dynos are being provisioned as `c4.xlarge` or `c4.2xlarge`. Either way, the `c4.xlarge` has 4 logical cores and the results were fairly consistent -- minimal evidence of the "noisy neighbors" effect from virtualized hosting.
+These tests were all run on an AWS `c4.xlarge` instance class. (I picked this because it roughly corresponds to the largest available Heroku Dyno size and that seemed like a good starting point for people thinking about Drupal deployments at a serious scale.) None of the tests showed anything out of the ordinary in terms of performance (those I ran several times had very similar results) and so the AWS "noisy neighbor" effect seemed minimal.
 
-I used a shell script of my own to provision the EC2 instance. I originally planned for this repo ([found here](https://www.github.com/Kazanir/maat)) to do the majority of the work, but midway into working on the provisioning scripts and testing I found that Facebook had taken care of a lot of the later legwork already, so I switched midstream to using their OSS Performance toolkit. This means that Ma'at has a bunch of unfinished work around an Apache-wildcard based setup for multiple Drupal testing services, but this didn't affect the Facebook toolkit and the install/provisioning process in the README should work out of the box -- the most recent copy of Ma'at's provisioning script was used to take these benchmarks.
+The test itself warms up an entire fresh Drupal codebase (I used Beta 11 released last Wednesday) along with a database dump and settings files from the OSS repo (mentioned below.) It first boots up the server and does 300 warmup requests. (There are several reasons for this, both warming up Drupal's internal caches and warming up the HHVM JIT compiler so it knows which code paths to optimize.) Then the test is run with a set concurrency for 2 minutes using Siege. (Siege 2.7.0 was used due to various bugs in the newer versions.) The default concurrency in Facebook's profiling kit is 200, but I reduced it to 1 and 20 for these tests. (Even at 20 it was evident that our instance was suffering quite a lot and basically CPU-blocked.)
+
+I used a shell script of my own to provision the EC2 instance. I originally planned for this repo ([found here](https://www.github.com/Kazanir/maat)) to do the majority of the work, but midway into working on the provisioning scripts and testing I found that Facebook had taken care of a lot of the later legwork already, so I switched midstream to using their OSS Performance toolkit. This means that my provisioner contains a lot of scaffolding for a different plan which can be safely ignored. This didn't affect the Facebook toolkit and the install/provisioning process in the README should work out of the box -- the most recent copy of Ma'at's provisioning script was used to take these benchmarks with no manual fixes or changes required.
 
 I used Facebook's [OSS Performance toolkit](https://www.github.com/hhvm/oss-performance) to do the actual testing. This should be as simple as cloning this repository, tweaking your settings, and running the appropriate commands. Additional documentation for this toolkit [can be found here](https://github.com/facebook/hhvm/wiki/Profiling#strobelight). I created the pull request to add Drupal 8 as a target (which is what I used to run these benchmarks) and it is currently [under review here](https://github.com/hhvm/oss-performance/pull/43); at this point I expect only minor tweaks before it is merged.
 
 My hope is that with all of the necessary plumbing documented in these repositories that these results should be fairly repeatable on similar hardware. In addition, fixes are quite obviously welcome -- if anyone sees trouble with the Drupal 8 target setup or other configuration bits that are affecting the profiling results then I'm happy to re-evaluate and re-run the tests. I hope that this transparency helps give the data more credibility than if it were a random pile of screenshots with no background information.
-
 
