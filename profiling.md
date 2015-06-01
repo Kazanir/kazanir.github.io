@@ -4,9 +4,13 @@ layout: page
 permalink: /profiling/
 ---
 
+After checking out the contents of [[meta] Resolve known performance regressions in Drupal 8](https://www.drupal.org/node/1744302) it became clear that we needed some serious numbers. Authenticated user performance and scaling of uncached page requests has never been one of Drupal's particular strong suits, and after seeing some scary numbers (a pageload is 3-4x as slow on D8!!!) I wanted to try to get a handle on things myself. Its easy for one set of half-baked statistics or another to spread and enter the public consciousness even though that information might not be reliable, so I have tried to generate a lot of numbers and document how I got to them so that the process is repeatable enough for anyone who wants to explore or verify this work.
+
+I hope the following is useful.
+
 #### Targets and Results ####
 
-I tested three targets: Drupal 7 with no page cache, Drupal 8 with no page cache, and Drupal 8 with the page cache. Data was populated by the `devel_generate` module as described in the README for the OSS Performance repository. More detail on how I assembled the Drupal 8 repository is included in its own target folder's README. The database dump, static file assets, and settings files used are all included in the target folder for all three targets. (Obviously I'm aware that D7 core and D8 core are far from a 1:1 comparison for a dozen different reasons and that's not my intent -- D7 stats are included as useful but not-all-determining background comparison.)
+I profiled three targets: Drupal 7 with no page cache, Drupal 8 with no page cache, and Drupal 8 with the page cache. Data was populated by the `devel_generate` module as described in the README for the OSS Performance repository. More detail on how I assembled the Drupal 8 repository is included in its own target folder's README. The database dump, static file assets, and settings files used are all included in the target folder for all three targets. (Obviously I'm aware that D7 core and D8 core are far from a 1:1 comparison for a dozen different reasons and that's not my intent -- D7 stats are included as useful but not-all-determining background comparison.)
 
 Each target was tested with a concurrency of 1 and 20 on the following 4 PHP runtimes:
 
