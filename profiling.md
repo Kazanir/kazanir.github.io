@@ -4,9 +4,9 @@ layout: page
 permalink: /profiling/
 ---
 
-After checking out the contents of [[meta] Resolve known performance regressions in Drupal 8](https://www.drupal.org/node/1744302) it became clear that we needed some serious numbers. Authenticated user performance and scaling of uncached page requests has never been one of Drupal's particularly strong suits, and after seeing some scary rumours I wanted to try to get a handle on things myself. Its easy for one set of half-baked statistics or another to spread and enter the public consciousness even though that information might not be reliable, so I have tried to generate a lot of numbers and document how I got to them so that the process is repeatable enough for anyone who wants to explore or verify this work.
+Since there is still some debate about Drupal 8's performance in the [performance-related meta issue on Drupal.org](https://www.drupal.org/node/1744302), I thought I would take a look at current performance numbers on several platforms and see how D8 is shaping up. Authenticated user performance and scaling of uncached page requests has never been one of Drupal's particularly strong points, and I was interested in gathering enough information to get an accurate picture of how things look right now. (As discussed at the end of the post, I also wanted to do it in a way that others could easily replicate.)
 
-I hope the following is useful.
+I hope the following data is useful.
 
 #### Targets and Results ####
 
@@ -23,13 +23,13 @@ HHVM's "repo authoritative" mode is similar to PHP's `apc.stat = 0` in that it d
 
 Here are the single-request results:
 
-
 | Concurrency: 1          | Drupal 7             | Drupal 8, No Cache   | Drupal 8, Page Cache |
 |-------------------------|----------------------|----------------------|----------------------|
 | PHP 5.6                 | `75.267339218159 ms` |  `219.2673992674 ms` | `22.322763306908 ms` |
 | PHP 7 Nightly           |  `9.661418627776 ms` |   `37.9087428206 ms` |  `2.001863401278 ms` |
 | HHVM 3.7.1              |  `9.580457863304 ms` |   `42.6652329749 ms` |  `2.219886789312 ms` |
 | HHVM 3.7.1 w/ Repo.Auth |  `9.879979570990 ms` |   `32.3803814713 ms` |  `1.642432380587 ms` |
+
 
 
 The stats from the benchmarking tool (a thin layer on top of Siege) are [available here](http://tiny.cc/d8perfstats). The raw JSON output (with more stats) is available for all targets on the second tab of the sheet.
