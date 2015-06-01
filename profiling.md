@@ -21,7 +21,7 @@ Each target was tested with a concurrency of 1 and 20 on the following 4 PHP run
 
 HHVM's "repo authoritative" mode is similar to PHP's `apc.stat = 0` in that it does not allow for changes to code files after the server has been booted. However, the restriction is actually more serious -- new code files cannot even be *added* after the server is booted (as the codebase is compiled into memory at boot time) and `eval()` and `create_function()` cannot be used. This means that D8 required a little sorcery to pre-compile all of Core's Twig templates. To do this (with many thanks to [Fabianx](https://www.drupal.org/u/fabianx) for his advice) I used a Drush script and fed it all the Twig templates in the repository, rendering them each once via Drush before compiling the HHVM codebase. (This setup script is in the profiling toolkit repo discussed later.)
 
-Here are the single-request results:
+Here are the results:
 
 | Concurrency: 1          | Drupal 7             | Drupal 8, No Cache    | Drupal 8, Page Cache  |
 |-------------------------|----------------------|-----------------------|-----------------------|
@@ -29,7 +29,9 @@ Here are the single-request results:
 | PHP 7 Nightly           |  `9.661418627776 ms` |   `37.9087428206 ms`  |  `2.001863401278 ms`  |
 | HHVM 3.7.1              |  `9.580457863304 ms` |   `42.6652329749 ms`  |  `2.219886789312 ms`  |
 | HHVM 3.7.1 w/ Repo.Auth |  `9.879979570990 ms` |   `32.3803814713 ms`  |  `1.642432380587 ms`  |
-| **Concurrency: 20**     |                      |                       |                       |
+
+| Concurrency: 20         | Drupal 7             | Drupal 8, No Cache    | Drupal 8, Page Cache  |
+|-------------------------|----------------------|-----------------------|-----------------------|
 | PHP 5.6                 |  `656.8264689730 ms` | `1,847.7268518519 ms` | `195.55651889416 ms`  |
 | PHP 7 Nightly           |  `73.02692943264 ms` | `292.86353631695 ms`  |  `6.8753742208811 ms` |
 | HHVM 3.7.1              |  `72.44890776699 ms` | `319.18654923939 ms`  | `18.630696400083 ms`  |
