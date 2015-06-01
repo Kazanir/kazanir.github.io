@@ -23,6 +23,7 @@ HHVM's "repo authoritative" mode is similar to PHP's `apc.stat = 0` in that it d
 
 Here are the single-request results:
 
+
 | Concurrency: 1          | Drupal 7             | Drupal 8, No Cache   | Drupal 8, Page Cache |
 |-------------------------|----------------------|----------------------|----------------------|
 | PHP 5.6                 | `75.267339218159 ms` |  `219.2673992674 ms` | `22.322763306908 ms` |
