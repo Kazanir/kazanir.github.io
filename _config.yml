@@ -9,4 +9,4 @@ twitter_username: Kazanir
 github_username: Kazanir
 
 # Build settings
-markdown: coderay
+markdown: kramdown
