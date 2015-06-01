@@ -70,3 +70,8 @@ I used Facebook's [OSS Performance toolkit](https://www.github.com/hhvm/oss-perf
 
 My hope is that with all of the necessary plumbing documented in these repositories that these results should be fairly repeatable on similar hardware. In addition, fixes are quite obviously welcome -- if anyone sees trouble with the Drupal 8 target setup or other configuration bits that are affecting the profiling results then I'm happy to re-evaluate and re-run the tests. I hope that this transparency helps give the data more credibility than if it were a random pile of screenshots with no background information.
 
+#### Takeaways ####
+
+I'm not sure if the initial data reports here are enough to give any solid conclusions for Drupal 8. Obviously there is more work to do here -- the top-line comparison to Drupal 7 is 3-4x slower, which isn't a **good** thing. But we have gained significant advantages in what Drupal 8 provides out of the box and those things have value which is worth a certain amount of performance hit. Furthermore, a large performance differential means more when you're going from 70ms to 200ms than it does when going from 10ms to 30ms. Given the performance increases available through new PHP runtimes, people in charge of serious, performance-hungry Drupal 8 deployments are hopefully still in good shape.
+
+I'm keen to repeat these tests regularly and publish the data now that the process is fairly systematized. As noted above, feedback is extremely welcome (and the value of this information will also depend on figuring out if I have done anything wrong.) Many thanks to the HHVM team for their work on the benchmarking toolkit and for their help putting the Drupal 8 target together, as well as to advance help from `#drupal-contribute` with feedback.
