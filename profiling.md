@@ -77,9 +77,9 @@ My hope is that with all of the necessary plumbing documented in these repositor
 
 #### Takeaways ####
 
-My takeaway from all of this is that we'd be well-served from doing as much work as we can to reduces D8's "warm cache" load times. I'm certainly biased in this regard -- I work for Commerce Guys now and my prior history with Drupal has involved building e-commerce sites, community/forum sites, and a support ticketing system that all saw significant load and couldn't realistically use something like the page cache. And I think being able to build sites of that complexity is something that plays to Drupal's strengths as a content management framework.
+I think the main takeaway is that there is plenty to do to improve D8's performance yet, particularly for those sites which can't realistically make use of the page cache. I'm certainly a little biased here -- I work for Commerce Guys and have used Drupal to build stuff like support ticketing systems and community forum-type sites as well as e-commerce sites. And I think being able to build sites of that complexity is something that plays to Drupal's strengths as a content management framework.
 
-That said, we've gained many features in the move to Drupal 8 and the 3-4x performance differential with Drupal 7 isn't determinative or a very useful 1-1 comparison. Given the performance increases available through new PHP runtimes, people in charge of serious, performance-hungry Drupal 8 deployments are hopefully still in good shape.
+That said, we've gained many features in the move to Drupal 8 and it isn't valid to try to make D7 to D8 a one-to-one comparison. In addition, given the performance increases available through new PHP runtimes, people in charge of serious, performance-hungry Drupal 8 deployments are hopefully still in good shape.
 
 Many thanks to the HHVM team for their work on the benchmarking toolkit and for their help putting the Drupal 8 target together, as well as to advance help from `#drupal-contribute` with feedback on the draft version of this post. (Especially [Berdir](https://www.drupal.org/u/berdir) who prodded me until I figured out what was wrong with the initial PHP5 benchmarks...)
 
