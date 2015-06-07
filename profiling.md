@@ -21,24 +21,28 @@ Each target was tested with a concurrency of 1, 5 and 20 on the following 4 PHP 
 
 HHVM's "repo authoritative" mode is similar to PHP's `apc.stat = 0` in that it does not allow for changes to code files after the server has been booted. However, the restriction is actually more serious -- new code files cannot even be *added* after the server is booted (as the codebase is compiled into memory at boot time) and `eval()` and `create_function()` cannot be used. This means that D8 required a little sorcery to pre-compile all of Core's Twig templates. To do this (with many thanks to [Fabianx](https://www.drupal.org/u/fabianx) for his advice) I used a Drush script and fed it all the Twig templates in the repository, rendering them each once via Drush before compiling the HHVM codebase. (This setup script is in the profiling toolkit repo discussed later.)
 
-Here are the results:
+The stats from the benchmarking tool are [available here](http://tiny.cc/d8perfstats). The raw JSON output is available for all targets on the second tab of the sheet. Here are the top-line results:
 
-| Concurrency: 1          | Drupal 7             | Drupal 8, No Cache   | Drupal 8, Page Cache |
-|-------------------------|----------------------|----------------------|----------------------|
-| PHP 5.6                 | `19.373075663282 ms` |  `59.3223880597 ms`  | `4.336321839080 ms`  |
-| PHP 7 Nightly           |  `9.661418627776 ms` |  `37.9087428206 ms`  | `2.001863401278 ms`  |
-| HHVM 3.7.1              |  `9.580457863304 ms` |  `42.6652329749 ms`  | `2.219886789312 ms`  |
-| HHVM 3.7.1 w/ Repo.Auth |  `9.879979570990 ms` |  `32.3803814713 ms`  | `1.642432380587 ms`  |
+| Concurrency: 1          	| Drupal 7, No Cache   	| Drupal 8, No Cache   	| Drupal 8, Page Cache 	|
+|-------------------------	|----------------------	|----------------------	|----------------------	|
+| PHP 5.6                 	| `18.881431767338 ms` 	| `59.322388059701 ms` 	| `4.3355761143817 ms` 	|
+| PHP 7 Nightly           	| `9.6919250538884 ms` 	| `29.00537109375 ms`  	| `2.4721870477577 ms` 	|
+| HHVM 3.7.1              	| `9.8024794772995 ms` 	| `33.148272017838 ms` 	| `2.7152219977343 ms` 	|
+| HHVM 3.7.1 w/ Repo.Auth 	| `9.352187149495 ms`  	| `24.877097315436 ms` 	| `1.9751959189708 ms` 	|
 
-| Concurrency: 20         | Drupal 7             | Drupal 8, No Cache   | Drupal 8, Page Cache |
-|-------------------------|----------------------|----------------------|----------------------|
-| PHP 5.6                 | `160.46008318798 ms` | `503.22731092437 ms` | `37.423682798243 ms` |
-| PHP 7 Nightly           |  `73.02692943264 ms` | `292.86353631695 ms` |  `6.875374220881 ms` |
-| HHVM 3.7.1              |  `72.44890776699 ms` | `319.18654923939 ms` | `18.630696400083 ms` |
-| HHVM 3.7.1 w/ Repo.Auth |  `69.32793263646 ms` | `236.28348478862 ms` |  `6.744057231447 ms` |
+| Concurrency: 5          	| Drupal 7, No Cache   	| Drupal 8, No Cache   	| Drupal 8, Page Cache 	|
+|-------------------------	|----------------------	|----------------------	|----------------------	|
+| PHP 5.6                 	| `38.900183390097 ms` 	| `120.97404703974 ms` 	| `9.5226556343559 ms` 	|
+| PHP 7 Nightly           	| `19.206674053313 ms` 	| `59.194753577106 ms` 	| `5.1739456043208 ms` 	|
+| HHVM 3.7.1              	| `18.939017359553 ms` 	| `63.98563464837 ms`  	| `5.7813411673458 ms` 	|
+| HHVM 3.7.1 w/ Repo.Auth 	| `17.91012121212 ms`  	| `47.262248295544 ms` 	| `3.6359491754163 ms` 	|
 
-
-The stats from the benchmarking tool (a thin layer on top of Siege) are [available here](http://tiny.cc/d8perfstats). The raw JSON output (with more stats) is available for all targets on the second tab of the sheet.
+| Concurrency: 20         	| Drupal 7, No Cache   	| Drupal 8, No Cache   	| Drupal 8, Page Cache 	|
+|-------------------------	|----------------------	|----------------------	|----------------------	|
+| PHP 5.6                 	| `163.54299384826 ms` 	| `496.97964270877 ms` 	| `37.044550591612 ms` 	|
+| PHP 7 Nightly           	| `74.770701435466 ms` 	| `234.28212674122 ms` 	| `19.385923792941 ms` 	|
+| HHVM 3.7.1              	| `73.781373517787 ms` 	| `262.5686704695 ms`  	| `21.350067339409 ms` 	|
+| HHVM 3.7.1 w/ Repo.Auth 	| `69.725548552755 ms` 	| `186.66401497426 ms` 	| `10.07130574152 ms`  	|
 
 #### Profiling Data ####
 
