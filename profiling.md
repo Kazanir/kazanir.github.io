@@ -53,13 +53,12 @@ In addition, I took performance profiles of most of the Drupal 8 targets for det
 - [Drupal 8, Warm Caches, User Login](https://blackfire.io/profiles/f7a96bf9-85b5-401e-9a93-b0237f9e505c/graph)
 - [Drupal 8, Page Cache, Front Page](https://blackfire.io/profiles/705a6e1f-3ec4-4c06-84f4-f208b76215f5/graph)
 
-I also used the Linux tools perf utility to profile HHVM during its D8 runs, recording a callgraph which profiles the requests and function calls. [These files can be found here.](https://paddedhelmets.s3.amazonaws.com/d8perfstats/index.html)
+I also used the Linux tools perf utility to profile HHVM during its 6 runs, recording a callgraph which profiles the requests and function calls. This was turned into a flamegraph SVG using [Brendan Gregg's wonderful flamegraph utility](https://github.com/brendangregg/FlameGraph). These flamegraphs are really neat and can be found here:
 
-Be warned: the contents of each of these zips are roughly 500 MB apiece. Once you have unzipped (`tar -xjf`) one of these files, you'll want to move the `.map` file to your `/tmp/` folder; this is where the perf tool looks for the function map files. Once you've done this, the data file's callgraph and profile info can viewed with perf, like so:
-
-```
-perf report -g -i d8-nocache-repoauth-perf-10552.data
-```
+- [Drupal 8, No Cache](/files/d8-nocache-flamegraph.svg)
+- [Drupal 8, No Cache, Repo Auth](/files/d8-nocache-repo-flamegraph.svg)
+- [Drupal 8, Page Cache](/files/d8-pagecache-flamegraph.svg)
+- [Drupal 8, Page Cache, Repo Auth](/files/d8-pagecache-repo-flamegraph.svg)
 
 #### Check My Work ####
 
